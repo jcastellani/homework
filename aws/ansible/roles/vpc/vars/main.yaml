@@ -4,9 +4,40 @@ vpc:
   name: jac-test-vpc
   cidr_block: 10.1.0.0/16
   region: us-east-2
+  tags:
+    name: jactest
+
   igw:
     tags:
       name: jac-test-igw
 
-  tags:
-    name: jactest
+  subnets:
+    - name: public
+      az: a
+      public: true
+      cidr: 10.1.1.0/24
+
+    - name: private
+      az: a
+      public: no
+      cidr: 10.1.2.0/24
+
+    - name: public
+      az: b
+      public: true
+      cidr: 10.1.3.0/24
+
+    - name: private
+      az: b
+      public: no
+      cidr: 10.1.4.0/24
+
+    - name: public
+      az: c
+      public: true
+      cidr: 10.1.5.0/24
+
+    - name: private
+      az: c
+      public: no
+      cidr: 10.1.5.0/24
