@@ -1,0 +1,4 @@
+---
+
+vpc-name: jac-test-vpc
+vpc-cidr-block: 10.1.0.0/16

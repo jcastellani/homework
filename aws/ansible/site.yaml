@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - include_role:
+      name: vpc
+
+  - include_role:
+      name: database
+
+  - include_role:
+      name: redis
+
+  - include_role:
+      name: airflow
