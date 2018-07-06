@@ -1,4 +1,12 @@
 ---
 
-vpc-name: jac-test-vpc
-vpc-cidr-block: 10.1.0.0/16
+vpc:
+  name: jac-test-vpc
+  cidr_block: 10.1.0.0/16
+  region: us-east-2
+  igw:
+    tags:
+      name: jac-test-igw
+
+  tags:
+    name: jactest

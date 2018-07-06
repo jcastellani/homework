@@ -1,0 +1,19 @@
+---
+
+- name: "Create a VPC named {{ vpc.name }} in {{ vpc.region }} with CIDR block {{ vpc.cidr_block }}"
+  ec2_vpc_net:
+    name: "{{ vpc.name }}"
+    cidr_block: "{{ vpc.cidr_block }}"
+    region: "{{ vpc.region }}"
+    tags: "{{ vpc.tags }}"
+    state: present
+  register: ec2
+
+- name: "Add IGW for VPC {{ vpc.name }}"
+  ec2_vpc_igw:
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    tags: "{{ vpc.igw.tags }}"
+    state: present
+  register: igw
+
