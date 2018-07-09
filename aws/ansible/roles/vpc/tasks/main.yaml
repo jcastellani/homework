@@ -26,4 +26,32 @@
     tags: "{{ item.tags | default({}) }}"
     state: present
   loop: "{{ vpc.subnets }}"
-  register: subnets
+  register: subnets_reply
+
+- name: Grab subnet metadata from results
+  set_fact:
+    subnets: "{{ subnets_reply.results }}"
+
+- name: Setup subnet ID list
+  set_fact:
+    subnet_ids: []
+
+- name: Get subnet IDs from results
+  set_fact:
+    subnet_ids: "{{ subnet_ids + [ item.subnet.id ]}}"
+  with_items: "{{ subnets }}"
+
+- debug:
+   var: subnet_ids
+
+- name: Create NACLs for subnets
+  ec2_vpc_nacl:
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    subnets: "{{ subnet_ids }}"
+    name: "{{ item.name }}"
+    tags: "{{ item.tags | default({}) }}"
+  loop: "{{ vpc.nacls }}"
+
+# - name: "Create routing tables for subnets in VPC {{ vpc.name }}"
+
