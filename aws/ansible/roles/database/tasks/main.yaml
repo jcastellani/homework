@@ -1,13 +1,60 @@
 ---
 
-#- rds:
-#    command: create
-#    instance_name: jactest
-#    db_engine: postgres
-#    size: 1024
-#    instance_type: db.t2.micro
-#    username: mysql_admin
-#    password: 1nsecure
-#    tags:
-#      Environment: testing
-#      Application: cms
+- name: Create security group for the RDS instance
+  ec2_group:
+    name: RDSSecurityGroup
+    description: Security group for Postgres instances running under RDS
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+          - 5432
+        cidr_ip: 10.0.0.0/8
+  register: db_sg
+
+- name: Gather private subnets in the VPC
+  ec2_vpc_subnet_facts:
+    filters:
+      vpc-id: "{{ ec2.vpc.id }}"
+      "tag:type": private
+  register: subnet_facts
+
+- debug:
+    var: subnet_facts
+
+- set_fact:
+    pvt_subnet_ids: "{{ subnet_facts.subnets|map(attribute='id')|list }}"
+
+- debug:
+    var: pvt_subnet_ids
+
+- name: Create a subnet group[ for RDS
+  rds_subnet_group:
+    name: database
+    description: Database subnets
+    region: "{{ vpc.region }}"
+    subnets: "{{ pvt_subnet_ids }}"
+    state: present
+  register: rds_grp
+
+
+- rds:
+    command: create
+    db_engine: postgres
+    db_name: jactest
+    instance_name: jactest
+    instance_type: db.t2.micro
+    license_model: postgresql-license
+    multi_zone: yes
+    publicly_accessible: no
+    region: "{{ vpc.region }}"
+    size: 10
+    subnet: database
+    username: postadmin
+    password: notpassword
+    vpc_security_groups: ["{{ db_sg.group_id }}"]
+    wait: yes
+    wait_timeout: 300
+  register: db
