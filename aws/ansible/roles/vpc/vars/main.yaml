@@ -81,3 +81,4 @@ vpc:
   routing_tables:
     public:
       subnets:
+        - public-a

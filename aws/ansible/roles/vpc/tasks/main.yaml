@@ -72,5 +72,16 @@
     tags: "{{ vpc.nacls.private.tags | default({}) }}"
     state: present
 
-# - name: "Create routing tables for subnets in VPC {{ vpc.name }}"
-
+- name: "Create routing tables for subnets in VPC {{ vpc.name }}"
+  ec2_vpc_route_table:
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    tags:
+      Name: Public
+    subnets:
+      - public-a
+      - public-b
+      - public-c
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw.gateway_id }}"
