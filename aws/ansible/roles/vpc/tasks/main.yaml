@@ -51,6 +51,7 @@
     subnets: "{{ subnet_ids }}"
     name: "{{ item.name }}"
     tags: "{{ item.tags | default({}) }}"
+    state: present
   loop: "{{ vpc.nacls }}"
 
 # - name: "Create routing tables for subnets in VPC {{ vpc.name }}"

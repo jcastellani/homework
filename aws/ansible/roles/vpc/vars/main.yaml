@@ -43,18 +43,15 @@ vpc:
       cidr: 10.1.6.0/24
 
   nacls:
-    - name: Allow outbound traffic to anywhere
-      egress:
-        - [100, 'all', 'allow', '0.0.0.0/0', null, null, null, null]
-
-    - name: Allow SSH from all IPs
+    - name: Default NACL
       ingress:
         - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 22, 22]
+        - [200, 'tcp', 'allow', '0.0.0/0', null, null, 32768, 65535]
+#        ['*', 'all', 'deny', '0.0.0.0/0', null, null, null, null]
 
-    - name: Allow inbound on any port from any server in the  VPC
-      ingress:
-        - [200, 'tcp', 'allow', '10.1.0.0/16', null, null, null, null]
+      egress:
+        - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
+        - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 443, 443]
+        - [300, 'tcp', 'allow', '0.0.0/0', null, null, 32768, 65535]
+#        ['*', 'all', 'deny', '0.0.0.0/0', null, null, null, null]
 
-    - name: Deny all other inbound traffic
-      ingress:
-        - [300, all, 'deny', '0.0.0.0/0', null, null, null, null]

@@ -1,0 +1,5 @@
+---
+
+dependencies:
+  - role: database
+  - role: redis
