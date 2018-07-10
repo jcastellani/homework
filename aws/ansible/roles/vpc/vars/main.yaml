@@ -12,46 +12,72 @@ vpc:
       name: jac-test-igw
 
   subnets:
-    - name: public
+    - name: public-a
       az: a
       public: true
       cidr: 10.1.1.0/24
+      tags:
+        type: public
+        Name: public-a
 
-    - name: private
+    - name: private-a
       az: a
       public: no
       cidr: 10.1.2.0/24
+      tags:
+        type: private
+        Name: private-a
 
-    - name: public
+    - name: public-b
       az: b
       public: true
       cidr: 10.1.3.0/24
+      tags:
+        type: public
+        Name: public-b
 
-    - name: private
+    - name: private-b
       az: b
       public: no
       cidr: 10.1.4.0/24
+      tags:
+        type: private
+        Name: private-b
 
-    - name: public
+    - name: public-c
       az: c
       public: true
       cidr: 10.1.5.0/24
+      tags:
+        type: public
+        Name: public-c
 
-    - name: private
+    - name: private-c
       az: c
       public: no
       cidr: 10.1.6.0/24
+      tags:
+        type: private
+        Name: private-c
 
   nacls:
-    - name: Default NACL
+    public:
+      name: public
       ingress:
         - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 22, 22]
-        - [200, 'tcp', 'allow', '0.0.0/0', null, null, 32768, 65535]
-#        ['*', 'all', 'deny', '0.0.0.0/0', null, null, null, null]
-
+        - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
+        - [300, 'tcp', 'allow', '0.0.0.0/0', null, null, 32768, 65535]
       egress:
-        - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
-        - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 443, 443]
-        - [300, 'tcp', 'allow', '0.0.0/0', null, null, 32768, 65535]
-#        ['*', 'all', 'deny', '0.0.0.0/0', null, null, null, null]
+        - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 0, 65535]
 
+
+    private:
+      name: private
+      ingress:
+        - [100, 'tcp', 'allow', '10.1.0.0/16', null, null, 0, 65535]
+      egress:
+        - [100, 'tcp', 'allow', '0.0.0.0/0', null, null,  0, 65535]
+
+  routing_tables:
+    public:
+      subnets:

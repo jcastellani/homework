@@ -44,15 +44,33 @@
 - debug:
    var: subnet_ids
 
-- name: Create NACLs for subnets
+- name: Create NACL for public subnets
   ec2_vpc_nacl:
     vpc_id: "{{ ec2.vpc.id }}"
     region: "{{ vpc.region }}"
-    subnets: "{{ subnet_ids }}"
-    name: "{{ item.name }}"
-    tags: "{{ item.tags | default({}) }}"
+    subnets:
+      - public-a
+      - public-b
+      - public-c
+    name: "{{ vpc.nacls.public.name }}"
+    ingress: "{{ vpc.nacls.public.ingress }}"
+    egress: "{{ vpc.nacls.public.egress | default([]) }}"
+    tags: "{{ vpc.nacls.public.tags | default({}) }}"
     state: present
-  loop: "{{ vpc.nacls }}"
+
+- name: Create NACL for private subnets
+  ec2_vpc_nacl:
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    subnets:
+      - private-a
+      - private-b
+      - private-c
+    name: "{{ vpc.nacls.private.name }}"
+    ingress: "{{ vpc.nacls.private.ingress }}"
+    egress: "{{ vpc.nacls.private.egress | default([]) }}"
+    tags: "{{ vpc.nacls.private.tags | default({}) }}"
+    state: present
 
 # - name: "Create routing tables for subnets in VPC {{ vpc.name }}"
 
