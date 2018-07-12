@@ -16,21 +16,16 @@
 
 - name: Gather private subnets in the VPC
   ec2_vpc_subnet_facts:
+    region: "{{ vpc.region }}"
     filters:
       vpc-id: "{{ ec2.vpc.id }}"
       "tag:type": private
   register: subnet_facts
 
-- debug:
-    var: subnet_facts
-
 - set_fact:
     pvt_subnet_ids: "{{ subnet_facts.subnets|map(attribute='id')|list }}"
 
-- debug:
-    var: pvt_subnet_ids
-
-- name: Create a subnet group[ for RDS
+- name: Create a subnet group for RDS
   rds_subnet_group:
     name: database
     description: Database subnets
@@ -43,8 +38,8 @@
 - rds:
     command: create
     db_engine: postgres
-    db_name: jactest
-    instance_name: jactest
+    db_name: airflow
+    instance_name: airflow
     instance_type: db.t2.micro
     license_model: postgresql-license
     multi_zone: yes
@@ -56,5 +51,5 @@
     password: notpassword
     vpc_security_groups: ["{{ db_sg.group_id }}"]
     wait: yes
-    wait_timeout: 300
+    wait_timeout: 600
   register: db
