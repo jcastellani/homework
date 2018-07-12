@@ -1,0 +1,35 @@
+---
+
+redis:
+  ami_id: ami-0f1ba4dd42a3b049e
+  instance_type: t2.micro
+  instance_tags:
+    class: redis
+  data-volume_size_gb: 10
+  ec2_keypair_name: jachomework
+  ec2_pvt_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAjzZd9sTf3KufIYwULWf4d6VLJPHRptllomOqjtj4Vvj4zwuvDIzKF9mgk3jL
+    KuyJ8TA2TEtjmGL1Ahkcj4JsraZbBT8pd6KFlX9qsYIwNV6Dmr9WGbbL0t7fmqYxPATnWew91/Rc
+    HtMp46xPkM47StrrHlxXISRLBMmNgjRauRLK8aCcZTY0GHBQzGME1xx7zhDZaC1Nl7zwu8n1Z9Mf
+    tzsXm0XofKCSzAc339fJhSqq16E+xZF3P/UZWKKoK/KdlgPGfnWl98WCnSuawO22PvMm42R0Zs5d
+    QkNBdNMet/ujkG1HDlxuIf8g3VcfY5aEfOPKRdN0b2OdY6znA1s/eQIDAQABAoIBAH515K12lbNX
+    vTIzbtHVoJuOU3exLY9nIw8tcTuorkqmmZbC23V6kS5UVy5CGS2zJ+/ZwejHHZA/udh7cjPrWKpS
+    XseYSbbBxbIIjJ9otcc6yX2Jfa9BMmTnt43pOUqljeFi8g1TU1FI6BGKY8wbwFHOVJY/thSm5rO4
+    gwO51W7crbDKIFR8IPMe2z2O1+NCtGtTqxEFbG2n4zumD+KwyW16v8OUGc41niQ5PdXeLdJTZpMV
+    /cJJWHa/4DUFtrjqiRLFNr1a0+3js8gunR3mZ//IvTt7YdrYH+K360raFqxroxPZ5XRxUN1SXswt
+    cIdEjLB9v3+k2bmnWeACBUFKht0CgYEAyrec4VsesBSjI7cM6JnY0ygjb6Zn7yL4ZioO6mqpAn5K
+    Z2bQ/MwEuI8ACGBkRug2YxPIOUgI52Owz6TRXYQdtM6mYU/4ufiewVGNQBLVxxHBPLS3fnQPlZ9x
+    wQ6Og2D4m7j/3HqY5yhWxYQpRZEBNKPedk19swcl9EGYRKgmQ7sCgYEAtNrOOMqudhsY4EmKDheS
+    hA9mUEu97Ai7ftXd1RnxEiYd6hh0qrSSDFURnb9fZJVQSbNPSJPzsvGePPwjzWXNrBpWbiDKNvg6
+    43JC/LlpR+jKAg0fxAkO4TWwL+h4s5sOBWpKxyYn8l6NAUa/y/Anpnd5Ltc9gOZJmQQo3MBSxFsC
+    gYBr481bI2Px0woAuCvmn/sGZxZ1Fdu7KqGJvlix6pKJAS4YWmBgKzVYBMO/sY2tL2nC0YR++BfF
+    DwnLeaz0WJx23oUuxaFbWTclLIJA18VvbcOqy4PdiWfB+lpQpa6zvaiTOKL0dUtru8xy0yQkIkjB
+    +3UrAZMk9Wj91utznwq+gQKBgQCu9GjA6dmh6Y7EEoAaJ9WWKWuZy9vbxYrUJUJnD6R1ISiZOLVM
+    Gkia44SaLPK0U/mKgor1NCNxfWnNp0FfRteTYRsxiEj2qmYVd4i0AQ2HAfzBxT5wny6k0RIzFloF
+    rb7/oBbc1t2YCr2veWi7egRxdmxl0tTtqFmUTEDXZLnstwKBgFtZ47SAeonh7EwzCKyfjggW1GaO
+    gypyYkGVVs+jqzhBMrDPZaBDrmGLH/6JRt+aL4XuVc9zb83rHUvbrLt5i2OrhRwgtkCvgV2yQaxQ
+    gePwvcUa3syaUjld6ZFibaykl++O7f/h80VARVAf8dZh++GnHOO8jsQ/I+K6HyzMWjOa
+    -----END RSA PRIVATE KEY-----
+
+

@@ -1,0 +1,45 @@
+---
+
+- name: Create security group for Redis
+  ec2_group:
+    name: RedisSecurityGroup
+    description: Security group for Redis instances running under Elasticache
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+          - 6379
+        cidr_ip: 10.0.0.0/8
+  register: redis_sg
+
+- name: Find private subnets in the VPC
+  ec2_vpc_subnet_facts:
+    region: "{{ vpc.region }}"
+    filters:
+      vpc-id: "{{ ec2.vpc.id }}"
+      "tag:type": private
+  register: private_subnet_facts
+
+- set_fact:
+    pvt_subnet_ids: "{{ private_subnet_facts.subnets|map(attribute='id')|list }}"
+
+- name: Create an instance to host Redis
+  ec2:
+    region: "{{ vpc.region }}"
+    image: "{{ redis.ami_id }}"
+    instance_type: "{{ redis.instance_type }}"
+    instance_tags: "{{ redis.instance_tags }}"
+    count_tag:
+      class: redis
+    exact_count: 1
+    key_name: "{{ redis.ec2_keypair_name }}"
+    group_id: "{{ redis_sg.group_id }}"
+    vpc_subnet_id: "{{ pvt_subnet_ids[0] }}"
+    wait: yes
+  register: redis_instance
+
+- name: Store the DNS name for the new instance
+  set_fact:
+    redis_dns_name: "{{ redis_instance.tagged_instances[0].private_dns_name }}"
