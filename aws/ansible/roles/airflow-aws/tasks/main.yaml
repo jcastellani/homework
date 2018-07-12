@@ -1,0 +1,62 @@
+---
+
+- name: Create security group for Airflow
+  ec2_group:
+    name: AirflowSecurityGroup
+    description: Security group for Airflow instances
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+          - 8080
+          - 443
+        cidr_ip: 0.0.0.0/0
+  register: airflow_sg
+
+- name: Find public subnets in the VPC
+  ec2_vpc_subnet_facts:
+    region: "{{ vpc.region }}"
+    filters:
+      vpc-id: "{{ ec2.vpc.id }}"
+      "tag:type": public
+  register: public_subnet_facts
+
+- set_fact:
+    public_subnet_ids: "{{ public_subnet_facts.subnets|map(attribute='id')|list }}"
+
+- name: Create an Ubuntu 16.04 instance
+  ec2:
+    region: "{{ vpc.region }}"
+    image: "{{ airflow.ami_id }}"
+    instance_type: "{{ airflow.instance_type }}"
+    instance_tags: "{{ airflow.instance_tags }}"
+    count_tag:
+      class: airflow
+    exact_count: 1
+    key_name: "{{ airflow.ec2_keypair_name }}"
+    group_id: "{{ airflow_sg.group_id }}"
+    vpc_subnet_id: "{{ public_subnet_ids[0] }}"
+    assign_public_ip: yes
+    wait: yes
+  register: airflow_instance
+
+- debug:
+    var: airflow_instance
+
+- name: Add new Airflow host to inventory
+  add_host:
+    name: "{{ item.public_ip }}"
+    groups: airflow
+  loop: "{{ airflow_instance.tagged_instances }}"
+
+- name: Wait for SSH to come up
+  wait_for:
+    host: "{{ item.public_dns_name }}"
+    port: 22
+    delay: 0
+    sleep: 5
+    timeout: 320
+    state: started
+  loop: "{{ airflow_instance.tagged_instances }}"
