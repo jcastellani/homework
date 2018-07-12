@@ -1,5 +1,5 @@
 ---
 
 dependencies:
-  - role: database
   - role: redis
+  - role: database
