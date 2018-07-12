@@ -24,6 +24,7 @@
     az: "{{ vpc.region }}{{ item.az }}"
     cidr: "{{ item.cidr }}"
     tags: "{{ item.tags | default({}) }}"
+    map_public: "{{ item.public }}"
     state: present
   loop: "{{ vpc.subnets }}"
   register: subnets_reply
@@ -40,9 +41,6 @@
   set_fact:
     subnet_ids: "{{ subnet_ids + [ item.subnet.id ]}}"
   with_items: "{{ subnets }}"
-
-- debug:
-   var: subnet_ids
 
 - name: Create NACL for public subnets
   ec2_vpc_nacl:
@@ -72,7 +70,7 @@
     tags: "{{ vpc.nacls.private.tags | default({}) }}"
     state: present
 
-- name: "Create routing tables for subnets in VPC {{ vpc.name }}"
+- name: "Create routing tables for public subnets in VPC {{ vpc.name }}"
   ec2_vpc_route_table:
     vpc_id: "{{ ec2.vpc.id }}"
     region: "{{ vpc.region }}"
@@ -83,5 +81,21 @@
       - public-b
       - public-c
     routes:
+      - dest: 10.1.0.0/16
+        gateway_id: local
       - dest: 0.0.0.0/0
         gateway_id: "{{ igw.gateway_id }}"
+
+- name: "Create routing tables for private subnets in VPC {{ vpc.name }}"
+  ec2_vpc_route_table:
+    vpc_id: "{{ ec2.vpc.id }}"
+    region: "{{ vpc.region }}"
+    tags:
+      Name: Private
+    subnets:
+      - private-a
+      - private-b
+      - private-c
+    routes:
+      - dest: 10.1.0.0/16
+        gateway_id: local

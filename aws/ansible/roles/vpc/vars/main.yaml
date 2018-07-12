@@ -3,7 +3,7 @@
 vpc:
   name: jac-test-vpc
   cidr_block: 10.1.0.0/16
-  region: us-east-2
+  region: eu-west-1
   tags:
     name: jactest
 
@@ -65,7 +65,7 @@ vpc:
       name: public
       ingress:
         - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 22, 22]
-        - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 80, 80]
+        - [200, 'tcp', 'allow', '0.0.0.0/0', null, null, 8080, 8080]
         - [300, 'tcp', 'allow', '0.0.0.0/0', null, null, 32768, 65535]
       egress:
         - [100, 'tcp', 'allow', '0.0.0.0/0', null, null, 0, 65535]
